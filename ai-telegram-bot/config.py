@@ -17,12 +17,17 @@ class Settings:
     max_delay_seconds: float = 2.5
     reply_style_prefix: str = "✨ "
 
-
     @staticmethod
     def from_env() -> "Settings":
+        api_id = os.environ.get("API_ID") or os.environ.get("TG_API_ID")
+        api_hash = os.environ.get("API_HASH") or os.environ.get("TG_API_HASH")
+
+        if not api_id or not api_hash:
+            raise ValueError("Set API_ID and API_HASH environment variables.")
+
         return Settings(
-            telegram_api_id=int(os.environ["TG_API_ID"]),
-            telegram_api_hash=os.environ["TG_API_HASH"],
+            telegram_api_id=int(api_id),
+            telegram_api_hash=api_hash,
             telegram_session=os.environ.get("TG_SESSION", "bot.session"),
             telegram_target_chat=os.environ["TG_TARGET_CHAT"],
             openai_api_key=os.environ["OPENAI_API_KEY"],
